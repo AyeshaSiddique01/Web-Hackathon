@@ -50,13 +50,14 @@ class model:
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()
-                cursor.execute(f"select Password from Users where Email = '{email_}';")
+                cursor.execute(f"select Password, userId from Users where Email = '{email_}';")
                 password = cursor.fetchall()
                 if password_ == password[0][0]:
-                    return True
-                return False
+                    return password[0][1]
+                return -1
         except Exception as e:
             print("Exception in validatePassword", str(e))
+            return -1
         finally:
             if cursor != None:
                 cursor.close()
@@ -67,15 +68,20 @@ class model:
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()
-                query = f'''insert into Users (FullName, Email, Password, PhoneNo) values ('{user.FullName}','{user.Email}','{user.Password}','{user.PhoneNo}');'''
+                query = f'''insert into Users (fullName, email, password, phoneNo) values ('{user.FullName}','{user.Email}','{user.Password}','{user.PhoneNo}');'''
+                print(query)
                 cursor.execute(query)
                 self.connection.commit()
-                return True
+                query = f'''select userId from Users where email = '{user.email}';'''
+                print(query)
+                cursor.execute(query)
+                data = cursor.fetchall()
+                return data[0][0]
             else:
-                return False
+                return -1
         except Exception as e:
             print("Exception in insertUser", str(e))
-            return False
+            return -1
         finally:
             if cursor != None:
                 cursor.close()

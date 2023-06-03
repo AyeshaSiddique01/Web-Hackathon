@@ -3,7 +3,7 @@ use Dynamic_Event_Schedule;
 
 DROP TABLE IF EXISTS `WishList`;
 DROP TABLE IF EXISTS `Participants`;
-DROP TABLE IF EXISTS `EventVenu`;
+DROP TABLE IF EXISTS `EventVenue`;
 DROP TABLE IF EXISTS `Events`;
 DROP TABLE IF EXISTS `UserInterested`;
 DROP TABLE IF EXISTS `Users`;
