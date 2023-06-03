@@ -18,21 +18,23 @@ class UserInterested :
         self.CatId = CatId
 
 class Events :
-    def __init__(self, EventID, UserCreated, Title, Description, Poster, CatID):
+    def __init__(self, EventID, UserCreated, Title, Description, Poster, CatID, Capacity, Date, Time, Duration):
         self.EventID = EventID
         self.UserCreated = UserCreated
         self.Title = Title
         self.Description = Description
         self.Poster = Poster
         self.CatID =CatID
-
-class EventVenue :
-    def __init__(self, EventVenuID, Date, Time, Duration, EventID) -> None:
-        self.EventVenuID = EventVenuID
+        self.Capacity =Capacity
         self.Date = Date
         self.Time = Time
         self.Duration = Duration
-        self.EventID = EventID
+
+# class EventVenue :
+#     def __init__(self, EventVenuID, , EventID) -> None:
+#         self.EventVenuID = EventVenuID
+        
+#         self.EventID = EventID
 
 class Participants :
     def __init__(self, ParticipantsID, UserPart, EventId, Status) -> None:

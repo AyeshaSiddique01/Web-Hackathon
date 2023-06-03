@@ -1,5 +1,4 @@
 from flask import *
-from flask_session import Session
 from werkzeug.wrappers import response
 from Model import model
 from datetime import datetime
@@ -12,7 +11,7 @@ import ssl
 import random
 import string
 from flask_mail import Mail, Message
-from BusinessObjects import *
+from ViewClasses import *
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 
@@ -43,9 +42,79 @@ app.config['MAIL_DEFAULT_SENDER'] = "elite.express243@gmail.com"
 mail = Mail(app) 
 verification_code = "".join(random.choices(string.ascii_letters+string.digits,k=10))
 
-@app.route('/SignUpPersonalInfo', methods=["POST"])
-def SignUpPersonalInfo():
-    pass
+@app.route("/allCategories", methods=["Get"])
+def AllCategories() :
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    return jsonify(m.getCategories())
+    
+@app.route('/SignUpData', methods=["POST"])
+def Register():
+    FullName = request.json.get("fullName")
+    Email = request.json.get("usernameSignUp")
+    Password = request.json.get("passwordSignUp")
+    PhoneNo = request.json.get("phoneNo")
+    c = Users(0, FullName, Email, Password, PhoneNo)
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    if m.checkUserExist(Email) :
+        return jsonify({"error": "User already exist"}), 401
+    
+    if m.insertUser(c) :
+        user_id = m.getUserID(Email)
+        access_token = create_access_token(identity=user_id)
+        return jsonify(access_token=access_token), 200
+    else :
+        print("Error in insertion")
+        return jsonify({"error": "Error in insertion"}), 401
+
+@app.route("/loginData", methods=["POST"])
+def logIn() :
+    Email = request.json.get("username")
+    Password = request.json.get("password")
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    
+    if not m.checkUserExist(Email):
+        return jsonify({"error": "User doesn't exist"}), 401
+    user_id = m.validatePassword(Email, Password)
+    if user_id == -1:
+        return jsonify({"error": "Invalid Password"}), 401    
+    else:
+        access_token = create_access_token(identity=user_id)
+        return jsonify(access_token=access_token), 200
+   
+@app.route("/AddEvent", methods=["POST"])
+def AddEvent():
+    UserCreated =  get_jwt_identity()
+    Title = request.json.get("Title")
+    Description = request.json.get("Description")
+    CatID = request.json.get("CatID")
+    Capacity = request.json.get("Capacity")
+    f = request.files.get("Poster")
+    Poster = f"Static\Poster\{UserCreated}_{Title}_{Description}.pdf"
+    if Path(Poster).is_file():
+        os.remove(Poster)
+    f.save(Poster)
+
+    Date = request.json.get("Date")
+    Time = request.json.get("Time")
+    Duration = request.json.get("Duration")
+    event = Events(0, UserCreated, Title, Description, Poster, CatID, Capacity,Date, Time, Duration)
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    eventId = m.insertEvent(event)
+
+# snd mail
+    return 200
+
+@app.route("/Feed", methods=["GET"])
+def Feed():
+    user_id =  get_jwt_identity()
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    data = m.getEventsOfOthers(user_id)
+    return jsonify(data)
 
 # Running app
 if __name__ == '__main__':
