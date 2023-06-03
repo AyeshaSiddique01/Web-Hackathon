@@ -59,8 +59,9 @@ def Register():
               app.config["DB_PASSWORD"], app.config["DATABASE"])
     if m.checkUserExist(Email) :
         return jsonify({"error": "User already exist"}), 401
-    user_id = m.insertUser(c)
-    if user_id != -1 :
+    
+    if m.insertUser(c) :
+        user_id = m.getUserID(Email)
         access_token = create_access_token(identity=user_id)
         return jsonify(access_token=access_token), 200
     else :
@@ -75,14 +76,11 @@ def logIn() :
               app.config["DB_PASSWORD"], app.config["DATABASE"])
     
     if not m.checkUserExist(Email):
-        print("User doesn't exist")
         return jsonify({"error": "User doesn't exist"}), 401
     user_id = m.validatePassword(Email, Password)
     if user_id == -1:
-        print("Invalid Password")
         return jsonify({"error": "Invalid Password"}), 401    
     else:
-        print("login")
         access_token = create_access_token(identity=user_id)
         return jsonify(access_token=access_token), 200
    

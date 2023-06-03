@@ -62,18 +62,12 @@ class model:
             if cursor != None:
                 cursor.close()
 
-    # for signUp
-    def insertUser(self, user):
+    def getUserID(self, email) :
         cursor = None
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()
-                query = f'''insert into Users (fullName, email, password, phoneNo) values ('{user.FullName}','{user.Email}','{user.Password}','{user.PhoneNo}');'''
-                print(query)
-                cursor.execute(query)
-                self.connection.commit()
-                query = f'''select userId from Users where email = '{user.email}';'''
-                print(query)
+                query = f'''select userId from Users where email = '{email}';'''
                 cursor.execute(query)
                 data = cursor.fetchall()
                 return data[0][0]
@@ -82,6 +76,24 @@ class model:
         except Exception as e:
             print("Exception in insertUser", str(e))
             return -1
+        finally:
+            if cursor != None:
+                cursor.close()
+    # for signUp
+    def insertUser(self, user):
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                query = f'''insert into Users (fullName, email, password, phoneNo) values ('{user.FullName}','{user.Email}','{user.Password}','{user.PhoneNo}');'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in insertUser", str(e))
+            return False
         finally:
             if cursor != None:
                 cursor.close()
