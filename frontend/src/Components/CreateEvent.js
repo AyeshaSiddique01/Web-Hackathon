@@ -15,11 +15,13 @@ export default function
   
     const [selectedFile, setSelectedFile] = useState(null);
     const [data, setdata] = useState({});
-    const [eventDate, setEventDate] = useState("");
-    const [eventDesc, setEventDesc] = useState("");
+    const [selectedeventDate, setEventDate] = useState("");
+    const [selectedeventDesc, setEventDesc] = useState("");
     const [allCats, setAllCats] = useState([]);
     const [selectedCats, setSelectedCats] = useState("");
-
+    const [selectedrecursive, setRecursive] = useState("");
+    const [selectedtitle, setTitle] = useState("");
+    const [selectedtime, setTime] = useState("");
     const accessToken = localStorage.getItem("access_token");
     useEffect(() => {
         const retrieve = async () => {
@@ -28,6 +30,28 @@ export default function
         };
         retrieve();
       }, []);
+    
+      function OnSubmit()
+      {
+        const url = "http://127.0.0.1:5000/createEvent";
+    var List = [];
+    List.push(
+      selectedCats,
+      selectedeventDate,
+      selectedeventDesc,
+      selectedrecursive,
+      selectedtitle,
+      selectedtime
+    );
+    axios
+      .post(url, List)
+      .then((res) => {
+        const responseData = res.data;
+        navigate("/home");
+      })
+      .catch((err) => alert(err + " OOPS! BAD REQUEST"));
+      }
+
     function showOpenFileDialog() {
         var input = document.createElement("input");
         input.type = "file";
@@ -116,7 +140,7 @@ export default function
                 </div>
                 <div className="item">
                     <p>Time of Event</p>
-                    <input type="time" name="name" />
+                    <input type="time" name="name" onChange={(e) => setTime(e.target.value)}/>
                     <i className="fas fa-clock"></i>
                 </div>
                 {/* <!-- <div className="item">
@@ -140,7 +164,7 @@ export default function
                 </div> --> */}
                 <div className="item">
                     <p>Title</p>
-                    <input type="text" name="name" />
+                    <input type="text" name="name" onChange={(e) => setTitle(e.target.value)}/>
                 </div>
                 {/* <div className="item">
                     <p>Venue Address</p>
@@ -168,9 +192,12 @@ export default function
                     <p>Expected Attendance</p>
                     <input type="text" name="name" />
                 </div>  */}
-                <div className="item">
+                <div className="item"  value={selectedCats}
+                          name="Categories"
+                          onChange={(event) =>
+                            setSelectedCats(event.target.value)
+                          }>
                     <p>Category of the event</p>
-                    <option value>--Select Year--</option>
                     {allCats.map((num, index) => {
                       return (
                         <option key={index} value={num}>
@@ -194,18 +221,18 @@ export default function
                     <p>Will this event be one Day or recursive?</p>
                     <div className="question-answer">
                         <div>
-                            <input type="radio" value="none" id="radio_1" name="recorded" />
+                            <input type="radio" value="none" id="radio_1" name="recorded" onChange={(e) => setRecursive(e.target.value)}/>
                             <label for="radio_1" className="radio"><span>One Day</span></label>
                         </div>
                         <div>
-                            <input type="radio" value="none" id="radio_2" name="recorded" />
+                            <input type="radio" value="none" id="radio_2" name="recorded" onChange={(e) => setRecursive(e.target.value)}/>
                             <label for="radio_2" className="radio"><span>Recursive</span></label>
                         </div>
 
                     </div>
                 </div>
                 <div className="btn-block">
-                    <button type="submit" href="/">SEND</button>
+                    <button type="submit" onClick = {OnSubmit}>SEND</button>
                 </div>
             </form>
         </div>
