@@ -1,7 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./css/login.css";
 import "./images/bg1.jpg";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 export default function Login() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [usernameSignUp, setUsernameSignUp] = useState("");
+    const [passwordSignUp, setPasswordSignUp] = useState("");
+    const [phoneNo, setPhoneNo] = useState("");
+    const [fullName, setfullName] = useState("");
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [dutyStatus, setDutyStatus] = useState("");
+    const [open, setOpen] = useState(false);
+
      useEffect(() => {
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
@@ -14,68 +29,102 @@ export default function Login() {
         });
     });
     
+    const handleChange = (event) => {
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+    
+        if (name === "username") {
+          setUsername(value);
+        } else if (name === "password") {
+          setPassword(value);
+        } else if (name === "passwordSignUp") {
+            setPasswordSignUp(value);
+        } else if (name === "fullName") {
+            setfullName(value);
+        } else if (name === "email") {
+            setUsernameSignUp(value);
+        }else if (name === "phoneNo") {
+            setPhoneNo(value);
+        }
+      };
+      const handleSubmit = (event) => {
+        event.preventDefault();
+    
+        fetch("http://127.0.0.1:5000/loginData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+            //   localStorage.setItem("access_token", data.access_token);
+              console.log("Token---:", localStorage.getItem("access_token"));
+              setLoggedIn(true);
+            } else {
+              setDutyStatus("Invalid Credentials!");
+              setOpen(true);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      };
 
-    // signUpButton.addEventListener('click', () => {
-    // container.classList.add("right-panel-active");
-    // });
-    // function handleSignUp(){
-    //     container.classList.add("right-panel-active");
-    // }
-    // function handleSignIn(){
-    //     container.classList.remove("right-panel-active");
-    // }
-    // signInButton.addEventListener('click', () => { 
-    // container.classList.remove("right-panel-active");
-    // });
+      const handleSignUp = (event) => {
+        event.preventDefault();
+    
+        fetch("http://127.0.0.1:5000/SignUpData", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ usernameSignUp, passwordSignUp, fullName,phoneNo }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+            //   localStorage.setItem("access_token", data.access_token);
+              console.log("Token---:", localStorage.getItem("access_token"));
+              setLoggedIn(true);
+            } else {
+              setDutyStatus("Invalid Credentials!");
+              setOpen(true);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      };
+
+      if (loggedIn) {
+        console.log("Login state true ===> ", loggedIn);
+        // return <Home />;
+      }
+    
+      const handleClose = () => {
+        setOpen(false);
+        setDutyStatus("");
+      };
     return (
         <>
-            {/* <div className="main-block">
-                <h1>Registration</h1>
-                <form action="/">
-                    <hr></hr>
-                    <div className="account-type">
-                        <input type="radio" value="none" id="radioOne" name="account" checked />
-                        <label for="radioOne" className="radio">Personal</label>
-                        <input type="radio" value="none" id="radioTwo" name="account" />
-                        <label for="radioTwo" className="radio">Company</label>
-                    </div>
-                    <hr></hr>
-                    <label id="icon" for="name"><i className="fas fa-envelope"></i></label>
-                    <input type="text" name="name" id="name" placeholder="Email" required />
-                    <label id="icon" for="name"><i className="fas fa-user"></i></label>
-                    <input type="text" name="name" id="name" placeholder="Name" required />
-                    <label id="icon" for="name"><i className="fas fa-unlock-alt"></i></label>
-                    <input type="password" name="name" id="name" placeholder="Password" required />
-                    <hr></hr>
-                    <div className="gender">
-                        <input type="radio" value="none" id="male" name="gender" checked />
-                        <label for="male" className="radio">Male</label>
-                        <input type="radio" value="none" id="female" name="gender" />
-                        <label for="female" className="radio">Female</label>
-                    </div>
-                    <hr></hr>
-                    <div className="btn-block">
-                        <p>By clicking Register, you agree on our <a href="https://www.w3docs.com/privacy-policy">Privacy Policy for W3Docs</a>.</p>
-                        <button type="submit" href="/">Submit</button>
-                    </div>
-                </form>
-            </div> */}
-            <h2>Welcome to Graffiti-Web</h2>
-            <dIv className="container" id="container" >
+            <h2>Dynamic Event Scheduler</h2>
+            <div className="container" id="container" >
                 <div className="form-container sign-up-container">
-                    <form action="/signup" method="post">
+                    <form >
                         <h1>Create Account</h1>
-                        <input type="email" placeholder="Email" name="email" />
-                        <input type="password" placeholder="Password" name="password" />
-                        <button>Sign Up</button>
+                        <input type="email" placeholder="Email" name="email" value={usernameSignUp} onChange={handleChange}  />
+                        <input type="fullName" placeholder="FullName" name="FullName" value = {fullName} onChange={handleChange} />
+                        <input type="password" placeholder="Password" name="passwordSignup" value={passwordSignUp} onChange={handleChange}  />
+                        <input type="phoneNo" placeholder="Phone No" name="phoneNo" value={phoneNo} onChange={handleChange}  />
+                        <button onClick = {handleSignUp}>Sign Up</button>
                     </form>
                 </div>
                 <div className="form-container sign-in-container">
-                    <form action="/login" method="post">
+                    <form>
                         <h1>Sign in</h1>
-                        <input type="email" placeholder="email" name="email" />
-                        <input type="password" placeholder="Password" name="password" />
-                        <button>Sign In</button>
+                        <input type="email" placeholder="Email" name="username" value={username} onChange={handleChange} />
+                        <input type="password" placeholder="Password" name="password" value={password} onChange={handleChange} />
+                        <button onClick = {handleSubmit}>Sign In</button>
                     </form>
                 </div>
                 <div className="overlay-container">
@@ -87,12 +136,19 @@ export default function Login() {
                         </div>
                         <div className="overlay-panel overlay-right">
                             <h1>Hello, Friend!</h1>
-                            <p>Enter your personal details and start your artistic journey with us</p>
+                            <p>Enter your personal details and start organizing your events.</p>
                             <button className="ghost" id="signUp" >Sign Up</button>
                         </div>
                     </div>
                 </div>
-            </dIv>
+                <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>LOGIN STATUS</DialogTitle>
+                <DialogContent>{dutyStatus}</DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+                </Dialog>
+            </div>
         </>
     )
 }
