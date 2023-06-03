@@ -1,6 +1,5 @@
-database="PUcon_Practice",  # write your Dbname
-host="localhost",
-user="postgres",
-password="Ayesha@1306",  # write your dbPassword
-port="5432"
-secret_key = "skahiduwhfbnx"
+DB_IP = 'localhost'
+DB_USER = 'root'
+DB_PASSWORD = '12345'
+DATABASE = 'Dynamic_Event_Schedule'
+SECRET_KEY='UsmaAyeshaManahil'

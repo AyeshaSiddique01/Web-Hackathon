@@ -1,27 +1,48 @@
-class student :
-    def __init__(self, name, roll_no, cgpa, semester, city, country) -> None:
-        self.name = name
-        self.roll_no = roll_no
-        self.cgpa = cgpa
-        self.semester = semester
-        self.city = city
-        self.country = country
-    
-    def __str__(self) -> str:
-        return f'''Name: {self.name},
-                    Roll No: {self.roll_no},
-                    cgpa: {self.cgpa},
-                    semester: {self.semester},
-                    city: {self.city},
-                    country: {self.country}'''
-    
-class user :
-    def __init__(self, name, email, password) -> None:
-        self.name = name
-        self.email = email
-        self.password = password
+class Users :
+    def __init__(self, UserID, FullName, Email, Password, PhoneNo) -> None:
+        self.UserID = UserID
+        self.FullName = FullName
+        self.Email = Email
+        self.Password = Password
+        self.PhoneNo = PhoneNo
 
-    def __str__(self) -> str:
-        return(f'''Name: {self.name}
-               Email: {self.email}
-               Password: {self.password}''')
+class EventCategies :
+    def __init__(self, CatID, Tag) -> None:
+        self.CatID = CatID
+        self.Tag = Tag
+
+class UserInterested :
+    def __init__(self, UserInterestedID, UserId, CatId) -> None:
+        self.UserInterestedID = UserInterestedID
+        self.UserId = UserId
+        self.CatId = CatId
+
+class Events :
+    def __init__(self, EventID, UserCreated, Title, Description, Poster, CatID):
+        self.EventID = EventID
+        self.UserCreated = UserCreated
+        self.Title = Title
+        self.Description = Description
+        self.Poster = Poster
+        self.CatID =CatID
+
+class EventVenue :
+    def __init__(self, EventVenuID, Date, Time, Duration, EventID) -> None:
+        self.EventVenuID = EventVenuID
+        self.Date = Date
+        self.Time = Time
+        self.Duration = Duration
+        self.EventID = EventID
+
+class Participants :
+    def __init__(self, ParticipantsID, UserPart, EventId, Status) -> None:
+        self.ParticipantsID = Participants
+        self.UserPart = UserPart
+        self.EventId = EventId
+        self.Status = Status
+
+class WishList :
+    def __init__(self, WishListID, UserID, EventId) -> None:
+        self.WishListID = WishListID
+        self.UserID = UserID
+        self.EventId = EventId
