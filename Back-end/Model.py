@@ -150,6 +150,20 @@ class model:
             if cursor != None:
                 cursor.close()
 
+    def getCatID(self, tag) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                cursor.execute(f"select CatID from EventCategies where Tag = '{tag}';")
+                data = cursor.fetchall()
+                return data
+        except Exception as e:
+            print("Exception in get events: ", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
     # Insert new Event
     def insertEvent(self, event):
         cursor = None
@@ -159,16 +173,13 @@ class model:
                 cursor = self.connection.cursor()              
                 query = f'''insert into Events (UserCreated, Title, Description, Poster, CatID, Capacity, Date, Time, Duration, Recursive) values({event.UserCreated}, '{event.Title}', '{event.Description}', '{event.Poster}', {event.CatID}, {event.Capacity},{event.Date}, '{event.Time}', '{event.Duration}', {event.Recursive});'''
                 cursor.execute(query)
-                self.connection.commit()
-                query = f'''select EventID from Events where Title = '{event.Title}' and Description = '{event.Description}' and UserCreated = '{event.UserCreated}' and CatID = {event.CatID};'''
-                cursor.execute(query)
-                data = cursor.fetchall()
-                return data[0][0]
+                self.connection.commit()                
+                return True
             else:
-                return -1
+                return False
         except Exception as e:
             print("Exception in insertEvent", str(e))
-            return -1
+            return False
         finally:
             if cursor != None:
                 cursor.close()
