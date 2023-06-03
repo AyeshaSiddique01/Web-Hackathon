@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import "./css/login.css";
-import "./images/bg1.jpg";
+// import "./images/bg1.jpg";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -87,6 +87,7 @@ export default function Login() {
       };
     return (
         <>
+        <div className = "LoginDiv">
             <h2>Dynamic Event Scheduler</h2>
             <div className="container" id="container" >
                 <div className="form-container sign-up-container">
@@ -128,6 +129,7 @@ export default function Login() {
                     <Button onClick={handleClose}>Close</Button>
                 </DialogActions>
                 </Dialog>
+            </div>
             </div>
         </>
     )

@@ -1,16 +1,16 @@
-/* body {
+.LoginDiv {
     background-image: url("bg1.jpg");
     text-align: center;
-} */
+} 
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
-
 * {
 	box-sizing: border-box;
 }
 
-body {
-	/* background-image: url("\\frontend\\src\\Components\\images\\bg1.jpg"); */
+.LoginDiv {
+	 background-image: url('bg1.jpg'); 
 	display: flex;
+	/* background-color: #90c4a1; */
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
