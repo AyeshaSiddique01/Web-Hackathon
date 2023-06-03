@@ -1,45 +1,157 @@
 from ViewClasses import *
-import psycopg2  # pip install psycopg2
+import pymysql
 
 
 class model:
-    def __init__(self, db, host, user,password, port):
+    # constructor
+    def __init__(self, host, user, password, database):
+        self.host = host
+        self.user = user
+        self.password = password
+        self.database = database
         self.connection = None
-        self.database=db,  # write your Dbname
-        self.host=host,
-        self.user=user,
-        self.password=password,  # write your dbPassword
-        self.port=port
+        # cursor = None
         try:
-            self.connection = psycopg2.connect(
-                database=self.database,  # write your Dbname
+            self.connection = pymysql.connect(
                 host=self.host,
                 user=self.user,
-                password=self.password,  # write your dbPassword
-                port=self.port)
+                password=self.password,
+                database=self.database,
+            )
         except Exception as e:
-            print(str(e))
+            print("There is error in connection", str(e))
 
+    # Destructor
     def __del__(self):
+
         if self.connection != None:
             self.connection.close()
-
-    def InsertUser(self, std):
+    # for log in
+    def checkUserExist(self, email):
         cursor = None
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()
-                query = f'''insert into public.student(name,roll_no,cgpa,city,country,semester) 
-	                        values ('{std.name}', '{std.roll_no}','{std.cgpa}', '{std.city}', '{std.country}', '{std.semester}'');
-                            '''
+                cursor.execute(f"select Email from Users;")
+                emailList = cursor.fetchall()
+                for e in emailList:
+                    if email == e[0]:
+                        return True
+                return False
+        except Exception as e:
+            print("Exception in checkUserExist", str(e))
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    # validate Password For log in
+    def validatePassword(self, email_, password_):
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                cursor.execute(f"select Password from Users where Email = '{email_}';")
+                password = cursor.fetchall()
+                if password_ == password[0][0]:
+                    return True
+                return False
+        except Exception as e:
+            print("Exception in validatePassword", str(e))
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    # for signUp
+    def insertUser(self, user):
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                query = f'''insert into Users (FullName, Email, Password, PhoneNo) values ('{user.FullName}','{user.Email}','{user.Password}','{user.PhoneNo}');'''
                 cursor.execute(query)
                 self.connection.commit()
                 return True
             else:
                 return False
         except Exception as e:
-            print("Exception in insertExaminer", str(e))
+            print("Exception in insertUser", str(e))
             return False
         finally:
             if cursor != None:
                 cursor.close()
+
+    # Insert new category
+    def insertCategory(self, tag):
+        cursor = None
+        user = Users()
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()              
+                query = f'''insert into EventCategies (Tag) values ("{tag}");'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in insertCategory", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    # Insert new Event
+    def insertEvent(self, event):
+        cursor = None
+        event = Events()
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()              
+                query = f'''insert into Events (UserCreated, Title, Description, Poster, CatID) values({event.UserCreated}, '{event.Title}', '{event.Description}', '{event.Poster}', {event.CatID});'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in insertEvent", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    # Insert new EventVenue
+    def insertEventVenu(self, eventVen):
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()              
+                query = f'''insert into EventVenu (Date, Time, Duration, EventID) values({eventVen.Date}, '{eventVen.Time}', '{eventVen.Duration}', {eventVen.EventID});'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in insertEventVenue", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    def search(self, searchBy, title) :  # Title/Description
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                cursor.execute(f"select * from Events where searchBy = '{title}';")
+                data = cursor.fetchall()
+                return data
+        except Exception as e:
+            print("Exception in search: ", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
+
