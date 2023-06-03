@@ -12,7 +12,9 @@
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.pagination li {
+  margin-right: 10px; /* Add desired margin between page numbers */
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
