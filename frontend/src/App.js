@@ -5,9 +5,6 @@ import Home from "./Components/Home"
 import CreateEvent from "./Components/CreateEvent"
 import SideBar from './Components/SideBar';
 function App() {
-  if (localStorage.getItem() != null){
-    
-  }
   return (
     <>
 

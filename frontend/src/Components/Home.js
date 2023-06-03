@@ -43,6 +43,11 @@ export default function Home() {
       },
     });
   };
+  const handleWishListClick = (event) => {
+    axios
+      .post("http://127.0.0.1:5000/AddToWishList", { Id: event.target.id })
+      .catch((err) => alert(err + " OOPS! BAD REQUEST"));
+  };
   if (!accessToken) {
     // return <Login />; // Render the Login component if access token doesn't exist
   }
@@ -83,6 +88,7 @@ export default function Home() {
                 <td>Title</td>
                 <td>Date</td>
                 <td>Time</td>
+                <td>WishList</td>
                 <td>Event Details</td>
               </tr>
             </thead>
@@ -122,6 +128,15 @@ export default function Home() {
                         <td className="tableText">{item[1]}</td>
                         <td className="tableText">{item[4]}</td>
                         <td className="tableText">{item[5]}</td>
+                        <td className="tableText">
+                          <button
+                            className="showDutyTableBtn"
+                            id={item[0]}
+                            onClick={handleWishListClick}
+                          >
+                            Add To WishList
+                          </button>
+                        </td>
                         <td className="tableText">
                           <button
                             className="showDutyTableBtn"
