@@ -164,7 +164,7 @@ class model:
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()              
-                query = f'''insert into EventVenu (Date, Time, Duration, EventID) values({eventVen.Date}, '{eventVen.Time}', '{eventVen.Duration}', {eventVen.EventID});'''
+                query = f'''insert into EventVenue (Date, Time, Duration, EventID) values({eventVen.Date}, '{eventVen.Time}', '{eventVen.Duration}', {eventVen.EventID});'''
                 cursor.execute(query)
                 self.connection.commit()
                 return True
@@ -177,7 +177,24 @@ class model:
             if cursor != None:
                 cursor.close()
 
-
+    def deleteEvent(self, event_id):
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                query = f"delete from Events where EventID = {event_id};"
+                cursor.execute(query)
+                self.connection.commit()                
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in deleteEvent", str(e))
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+        
     def AddParticipant(self, part) :
         cursor = None
         try:
@@ -246,3 +263,74 @@ class model:
             if cursor:
                 cursor.close()
 
+    def updateEvent(self, event, eventVenue) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                query = f'''update Events set Title = {event.Title}, Description = {event.Description}, Poster = '{event.Poster}' where  EventID = {event.EventID};'''
+                cursor.execute(query)
+                self.connection.commit()  
+                query = f'''update EventVenue set Date = {eventVenue.Date}, Time = {eventVenue.Time}, Duration = '{eventVenue.Duration}' where  EventVenuID = {eventVenue.EventVenuID};'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in updateItem", str(e))
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+
+    def getEventsOfOthers(self, user_id) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                cursor.execute(f"select * from Events where UserCreated != {user_id};")
+                data = cursor.fetchall()
+                return data
+        except Exception as e:
+            print("Exception in get events: ", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+    
+    def InsertWishList(self, wish) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()              
+                query = f'''insert into WishList (UserID, EventID) values({wish.UserID}, {wish.EventId});'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in InsertWishList", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    def RemoveFromWishList(self, wishID) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                query = f"delete from WishList where WishListID = {wishID};"
+                cursor.execute(query)
+                self.connection.commit()                
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in RemoveFromWishList", str(e))
+            return False
+        finally:
+            if cursor:
+                cursor.close()
