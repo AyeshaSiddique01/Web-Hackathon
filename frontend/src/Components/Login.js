@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import axios from 'axios';
 import "./css/login.css";
 import "./images/bg1.jpg";
 import Button from "@mui/material/Button";
@@ -6,12 +7,14 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import { useNavigate,createSearchParams } from 'react-router-dom';
 export default function Login() {
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [usernameSignUp, setUsernameSignUp] = useState("");
     const [passwordSignUp, setPasswordSignUp] = useState("");
-    const [phoneNo, setPhoneNo] = useState(1);
+    const [phoneNo, setPhoneNo] = useState("");
     const [fullName, setfullName] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
     const [dutyStatus, setDutyStatus] = useState("");
@@ -68,13 +71,14 @@ export default function Login() {
             if (data.success) {
              localStorage.setItem("access_token", data.access_token);
               console.log("Token---:", localStorage.getItem("access_token"));}
+              setLoggedIn(true);
           })
           .catch((error) => console.error("Error:", error));
       };
 
       if (loggedIn) {
         console.log("Login state true ===> ", loggedIn);
-        // return <Home />;
+        return navigate("/home");
       }
     
       const handleClose = () => {
@@ -91,7 +95,7 @@ export default function Login() {
                         <input type="email" placeholder="Email" name="email" onChange={(e) => setUsernameSignUp(e.target.value)} required   />
                         <input type="text" placeholder="FullName" name="FullName" onChange={(e) => setfullName(e.target.value)} required  />
                         <input type="password" placeholder="Password" name="passwordSignup" onChange={(e) => setPasswordSignUp(e.target.value)} required   />
-                        <input type="number" placeholder="Phone No" name="phoneNo" value={phoneNo} onChange={(e) => setPhoneNo(e.target.value)} required    />
+                        <input type="text" placeholder="Phone No" name="phoneNo" value={phoneNo} onChange={(e) => setPhoneNo(e.target.value)} required    />
                         <button onClick = {handleSignUp}>Sign Up</button>
                     </form>
                 </div>
