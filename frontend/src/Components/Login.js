@@ -11,7 +11,7 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [usernameSignUp, setUsernameSignUp] = useState("");
     const [passwordSignUp, setPasswordSignUp] = useState("");
-    const [phoneNo, setPhoneNo] = useState("");
+    const [phoneNo, setPhoneNo] = useState(1);
     const [fullName, setfullName] = useState("");
     const [loggedIn, setLoggedIn] = useState(false);
     const [dutyStatus, setDutyStatus] = useState("");
@@ -28,26 +28,7 @@ export default function Login() {
         container.classList.remove("right-panel-active");
         });
     });
-    
-    const handleChange = (event) => {
-        const target = event.target;
-        const value = target.value;
-        const name = target.name;
-    
-        if (name === "username") {
-          setUsername(value);
-        } else if (name === "password") {
-          setPassword(value);
-        } else if (name === "passwordSignUp") {
-            setPasswordSignUp(value);
-        } else if (name === "fullName") {
-            setfullName(value);
-        } else if (name === "email") {
-            setUsernameSignUp(value);
-        }else if (name === "phoneNo") {
-            setPhoneNo(value);
-        }
-      };
+
       const handleSubmit = (event) => {
         event.preventDefault();
     
@@ -61,7 +42,7 @@ export default function Login() {
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-            //   localStorage.setItem("access_token", data.access_token);
+               localStorage.setItem("access_token", data.access_token);
               console.log("Token---:", localStorage.getItem("access_token"));
               setLoggedIn(true);
             } else {
@@ -85,20 +66,15 @@ export default function Login() {
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-            //   localStorage.setItem("access_token", data.access_token);
-              console.log("Token---:", localStorage.getItem("access_token"));
-              setLoggedIn(true);
-            } else {
-              setDutyStatus("Invalid Credentials!");
-              setOpen(true);
-            }
+             localStorage.setItem("access_token", data.access_token);
+              console.log("Token---:", localStorage.getItem("access_token"));}
           })
           .catch((error) => console.error("Error:", error));
       };
 
       if (loggedIn) {
         console.log("Login state true ===> ", loggedIn);
-        // return <Home />;
+        return <Home />;
       }
     
       const handleClose = () => {
@@ -110,20 +86,20 @@ export default function Login() {
             <h2>Dynamic Event Scheduler</h2>
             <div className="container" id="container" >
                 <div className="form-container sign-up-container">
-                    <form >
+                    <form>
                         <h1>Create Account</h1>
-                        <input type="email" placeholder="Email" name="email" value={usernameSignUp} onChange={handleChange}  />
-                        <input type="fullName" placeholder="FullName" name="FullName" value = {fullName} onChange={handleChange} />
-                        <input type="password" placeholder="Password" name="passwordSignup" value={passwordSignUp} onChange={handleChange}  />
-                        <input type="phoneNo" placeholder="Phone No" name="phoneNo" value={phoneNo} onChange={handleChange}  />
+                        <input type="email" placeholder="Email" name="email" onChange={(e) => setUsernameSignUp(e.target.value)} required   />
+                        <input type="text" placeholder="FullName" name="FullName" onChange={(e) => setfullName(e.target.value)} required  />
+                        <input type="password" placeholder="Password" name="passwordSignup" onChange={(e) => setPasswordSignUp(e.target.value)} required   />
+                        <input type="number" placeholder="Phone No" name="phoneNo" value={phoneNo} onChange={(e) => setPhoneNo(e.target.value)} required    />
                         <button onClick = {handleSignUp}>Sign Up</button>
                     </form>
                 </div>
                 <div className="form-container sign-in-container">
                     <form>
                         <h1>Sign in</h1>
-                        <input type="email" placeholder="Email" name="username" value={username} onChange={handleChange} />
-                        <input type="password" placeholder="Password" name="password" value={password} onChange={handleChange} />
+                        <input type="email" placeholder="Email" name="username" onChange={(e) => setUsername(e.target.value)} required   />
+                        <input type="password" placeholder="Password" name="password" onChange={(e) => setPassword(e.target.value)} required   />
                         <button onClick = {handleSubmit}>Sign In</button>
                     </form>
                 </div>
