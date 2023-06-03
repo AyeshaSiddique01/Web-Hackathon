@@ -139,16 +139,33 @@ class model:
             if cursor != None:
                 cursor.close()
 
-    def search(self, searchBy, title) :  # Title/Description
+    def search(self, searchBy, value) :  # Title/Description/CatID/EventID
         cursor = None
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()
-                cursor.execute(f"select * from Events where searchBy = '{title}';")
+                cursor.execute(f"select * from Events where {searchBy} = '{value}';")
                 data = cursor.fetchall()
                 return data
         except Exception as e:
             print("Exception in search: ", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    def searchByDate(self, date) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                cursor.execute(f"select EventID from EventVenue where Date = '{date}';")
+                data = cursor.fetchall()
+                cursor.execute(f"select * from Events where EventID = '{date[0][0]}';")
+                data = cursor.fetchall()
+                return data
+        except Exception as e:
+            print("Exception in searchByDate: ", str(e))
             return False
         finally:
             if cursor != None:
