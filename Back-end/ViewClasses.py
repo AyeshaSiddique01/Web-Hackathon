@@ -18,7 +18,7 @@ class UserInterested :
         self.CatId = CatId
 
 class Events :
-    def __init__(self, EventID, UserCreated, Title, Description, Poster, CatID, Capacity, Date, Time, Duration):
+    def __init__(self, EventID, UserCreated, Title, Description, Poster, CatID, Capacity, Date, Time, Duration, Recursive):
         self.EventID = EventID
         self.UserCreated = UserCreated
         self.Title = Title
@@ -29,6 +29,7 @@ class Events :
         self.Date = Date
         self.Time = Time
         self.Duration = Duration
+        self.Recursive = Recursive
 
 # class EventVenue :
 #     def __init__(self, EventVenuID, , EventID) -> None:

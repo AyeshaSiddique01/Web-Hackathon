@@ -157,7 +157,7 @@ class model:
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()              
-                query = f'''insert into Events (UserCreated, Title, Description, Poster, CatID, Capacity, Date, Time, Duration) values({event.UserCreated}, '{event.Title}', '{event.Description}', '{event.Poster}', {event.CatID}, {event.Capacity},{event.Date}, '{event.Time}', '{event.Duration}');'''
+                query = f'''insert into Events (UserCreated, Title, Description, Poster, CatID, Capacity, Date, Time, Duration, Recursive) values({event.UserCreated}, '{event.Title}', '{event.Description}', '{event.Poster}', {event.CatID}, {event.Capacity},{event.Date}, '{event.Time}', '{event.Duration}', {event.Recursive});'''
                 cursor.execute(query)
                 self.connection.commit()
                 query = f'''select EventID from Events where Title = '{event.Title}' and Description = '{event.Description}' and UserCreated = '{event.UserCreated}' and CatID = {event.CatID};'''
@@ -304,7 +304,7 @@ class model:
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()
-                cursor.execute(f"select Events.Title, Events.Description, Events.Poster, Events.Date, Events.Time, Events.Duration, EventCategies.Tag from Events, EventCategies where Events.CatID = EventCategies.CatID AND UserCreated != {user_id} order by Events.Capacity, Events.Date;")
+                cursor.execute(f"select Event.EventID, Events.Title, Events.Description, Events.Poster, Events.Date, Events.Time, Events.Duration, EventCategies.Tag from Events, EventCategies where Events.CatID = EventCategies.CatID AND UserCreated != {user_id} order by Events.Capacity, Events.Date;")
                 data = cursor.fetchall()
                 return data
         except Exception as e:

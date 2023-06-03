@@ -91,6 +91,7 @@ def AddEvent():
     Description = request.json.get("Description")
     CatID = request.json.get("CatID")
     Capacity = request.json.get("Capacity")
+    Recursive = request.json.get("Recursive")
     f = request.files.get("Poster")
     Poster = f"Static\Poster\{UserCreated}_{Title}_{Description}.pdf"
     if Path(Poster).is_file():
@@ -100,7 +101,7 @@ def AddEvent():
     Date = request.json.get("Date")
     Time = request.json.get("Time")
     Duration = request.json.get("Duration")
-    event = Events(0, UserCreated, Title, Description, Poster, CatID, Capacity,Date, Time, Duration)
+    event = Events(0, UserCreated, Title, Description, Poster, CatID, Capacity,Date, Time, Duration, Recursive)
     m = model(app.config["DB_IP"], app.config["DB_USER"],
               app.config["DB_PASSWORD"], app.config["DATABASE"])
     eventId = m.insertEvent(event)
