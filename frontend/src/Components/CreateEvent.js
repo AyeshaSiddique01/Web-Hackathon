@@ -15,8 +15,19 @@ export default function
   
     const [selectedFile, setSelectedFile] = useState(null);
     const [data, setdata] = useState({});
+    const [eventDate, setEventDate] = useState("");
+    const [eventDesc, setEventDesc] = useState("");
+    const [allCats, setAllCats] = useState([]);
+    const [selectedCats, setSelectedCats] = useState("");
 
     const accessToken = localStorage.getItem("access_token");
+    useEffect(() => {
+        const retrieve = async () => {
+          const response = await axios.get("http://127.0.0.1:5000/allCategories");
+          setAllCats(response.data);
+        };
+        retrieve();
+      }, []);
     function showOpenFileDialog() {
         var input = document.createElement("input");
         input.type = "file";
@@ -100,7 +111,7 @@ export default function
                 </div>
                 <div className="item">
                     <p>Date of Event</p>
-                    <input type="date" name="bdate" />
+                    <input type="date" name="bdate" onChange={(e) => setEventDate(e.target.value)} required />
                     <i className="fas fa-calendar-alt"></i>
                 </div>
                 <div className="item">
@@ -121,7 +132,7 @@ export default function
                 </div> --> */}
                 <div className="item">
                     <p>Description of Event</p>
-                    <textarea rows="3"></textarea>
+                    <textarea rows="3" onChange={(e) => setEventDesc(e.target.value)}></textarea>
                 </div>
                 {/* <!-- <div className="item">
                     <p>Promoter's Name</p>
@@ -159,15 +170,14 @@ export default function
                 </div>  */}
                 <div className="item">
                     <p>Category of the event</p>
-                    <select>
-                        <option value=""></option>
-                        <option value="1">*Please select*</option>
-                        <option value="2">IT Seminar</option>
-                        <option value="3">Musical drama</option>
-                        <option value="2">Theatre</option>
-                        <option value="2">Concert</option>
-                        <option value="2">Medical</option>
-                    </select>
+                    <option value>--Select Year--</option>
+                    {allCats.map((num, index) => {
+                      return (
+                        <option key={index} value={num}>
+                          {num}
+                        </option>
+                      );
+                    })}
                 </div>
                 <div>
                 <button
