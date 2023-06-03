@@ -42,6 +42,12 @@ app.config['MAIL_DEFAULT_SENDER'] = "elite.express243@gmail.com"
 mail = Mail(app) 
 verification_code = "".join(random.choices(string.ascii_letters+string.digits,k=10))
 
+@app.route("/allCategories", methods=["Get"])
+def AllCategories() :
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    return jsonify(m.getCategories())
+    
 @app.route('/SignUpData', methods=["POST"])
 def Register():
     FullName = request.json.get("fullName")
@@ -49,15 +55,12 @@ def Register():
     Password = request.json.get("passwordSignUp")
     PhoneNo = request.json.get("phoneNo")
     c = Users(0, FullName, Email, Password, PhoneNo)
-    print(c.Email)
     m = model(app.config["DB_IP"], app.config["DB_USER"],
               app.config["DB_PASSWORD"], app.config["DATABASE"])
     if m.checkUserExist(Email) :
-        print("User already exist")
         return jsonify({"error": "User already exist"}), 401
     user_id = m.insertUser(c)
     if user_id != -1 :
-        print("yes")
         access_token = create_access_token(identity=user_id)
         return jsonify(access_token=access_token), 200
     else :

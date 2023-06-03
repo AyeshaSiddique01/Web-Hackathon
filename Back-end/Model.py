@@ -86,10 +86,27 @@ class model:
             if cursor != None:
                 cursor.close()
 
+    def AddInterest(self, user_id, cat_id) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()              
+                query = f'''insert into UserInterested (userId, catId) values ({user_id}, {cat_id});'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in insertCategory", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
     # Insert new category
     def insertCategory(self, tag):
         cursor = None
-        user = Users()
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()              
@@ -101,6 +118,21 @@ class model:
                 return False
         except Exception as e:
             print("Exception in insertCategory", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
+    def getCategories(self):
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                cursor.execute(f"select Tag from EventCategies;")
+                data = cursor.fetchall()
+                return data
+        except Exception as e:
+            print("Exception in search: ", str(e))
             return False
         finally:
             if cursor != None:
@@ -145,6 +177,25 @@ class model:
             if cursor != None:
                 cursor.close()
 
+
+    def AddParticipant(self, part) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()              
+                query = f'''insert into Participants (userPart, eventId, status) values({part.UserPart}, {part.EventId}, '{part.Status}';'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in AddParticipant", str(e))
+            return False
+        finally:
+            if cursor != None:
+                cursor.close()
+
     def search(self, searchBy, value) :  # Title/Description/CatID/EventID
         cursor = None
         try:
@@ -177,4 +228,21 @@ class model:
             if cursor != None:
                 cursor.close()
 
+    def ConfirmEvent(self, p_id, status) :
+        cursor = None
+        try:
+            if self.connection != None:
+                cursor = self.connection.cursor()
+                query = f'''update Participants set status = '{status}' where  participantsId = {p_id};'''
+                cursor.execute(query)
+                self.connection.commit()
+                return True
+            else:
+                return False
+        except Exception as e:
+            print("Exception in updateEvent", str(e))
+            return False
+        finally:
+            if cursor:
+                cursor.close()
 
