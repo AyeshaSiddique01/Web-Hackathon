@@ -13,7 +13,7 @@ def logIn():
 
     # m = model(app.config["database"], app.config["host"],
     #           app.config["user"], app.config["password"], app.config["port"])
-    return render_template("index.html")
+    return "/"
 
 if __name__ == '__main__':
     app.run(debug = True)
