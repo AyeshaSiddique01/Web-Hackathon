@@ -110,7 +110,8 @@ def AddEvent():
 
 @app.route("/Feed", methods=["GET"])
 def Feed():
-    user_id =  get_jwt_identity()
+    # user_id =  get_jwt_identity()
+    user_id =  1
     m = model(app.config["DB_IP"], app.config["DB_USER"],
               app.config["DB_PASSWORD"], app.config["DATABASE"])
     data = m.getEventsOfOthers(user_id)
