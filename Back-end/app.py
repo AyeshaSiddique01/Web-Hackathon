@@ -87,23 +87,23 @@ def logIn() :
 @app.route("/AddEvent", methods=["POST"])
 def AddEvent():
     UserCreated =  get_jwt_identity()
-    Title = request.json.get("Title")
-    Description = request.json.get("Description")
-    CatID = request.json.get("CatID")
-    Capacity = request.json.get("Capacity")
+    Title = request.json.get("selectedtitle")
+    Description = request.json.get("selectedeventDesc")
+    Capacity = request.json.get("selectedCapacity")
+    Recursive = request.json.get("selectedrecursive")
     f = request.files.get("Poster")
     Poster = f"Static\Poster\{UserCreated}_{Title}_{Description}.pdf"
     if Path(Poster).is_file():
         os.remove(Poster)
     f.save(Poster)
-
-    Date = request.json.get("Date")
-    Time = request.json.get("Time")
-    Duration = request.json.get("Duration")
-    event = Events(0, UserCreated, Title, Description, Poster, CatID, Capacity,Date, Time, Duration)
+    Date = request.json.get("selectedeventDate")
+    Time = request.json.get("selectedtime")
+    Duration = request.json.get("selectedDuration")
+    event = Events(0, UserCreated, Title, Description, Poster, CatID, Capacity,Date, Time, Duration, Recursive)
     m = model(app.config["DB_IP"], app.config["DB_USER"],
               app.config["DB_PASSWORD"], app.config["DATABASE"])
-    eventId = m.insertEvent(event)
+    CatID = m.getCatID(request.json.get("selectedCats"))
+    m.insertEvent(event)
 
 # snd mail
     return 200

@@ -22,6 +22,8 @@ export default function
     const [selectedrecursive, setRecursive] = useState("");
     const [selectedtitle, setTitle] = useState("");
     const [selectedtime, setTime] = useState("");
+    const [selectedDuration, setDuration] = useState("");
+    const [selectedCapacity, setCapacity] = useState("");
     const accessToken = localStorage.getItem("access_token");
     useEffect(() => {
         const retrieve = async () => {
@@ -41,7 +43,9 @@ export default function
       selectedeventDesc,
       selectedrecursive,
       selectedtitle,
-      selectedtime
+      selectedtime,
+      selectedDuration,
+      selectedCapacity
     );
     axios
       .post(url, List)
@@ -143,6 +147,16 @@ export default function
                     <input type="time" name="name" onChange={(e) => setTime(e.target.value)}/>
                     <i className="fas fa-clock"></i>
                 </div>
+                <div className="item">
+                    <p>Duration of Event</p>
+                    <input type="number" name="Duration" onChange={(e) => setDuration(e.target.value)}/>
+                    <i className="fas fa-clock"></i>
+                </div>
+                <div className="item">
+                    <p>Capacity of Event</p>
+                    <input type="number" name="Capacity" onChange={(e) => setCapacity(e.target.value)}/>
+                    <i className="fas fa-clock"></i>
+                </div>
                 {/* <!-- <div className="item">
                     <p>Select Artist</p>
                     <select>
@@ -187,7 +201,7 @@ export default function
                 <div className="item">
                     <p>Total Seats of the Event</p>
                     <input type="number" name="capacity" />
-                </div>
+                </div>                
                 {/* <div className="item">
                     <p>Expected Attendance</p>
                     <input type="text" name="name" />
