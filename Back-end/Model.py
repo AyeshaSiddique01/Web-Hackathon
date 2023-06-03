@@ -145,37 +145,40 @@ class model:
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()              
-                query = f'''insert into Events (UserCreated, Title, Description, Poster, CatID) values({event.UserCreated}, '{event.Title}', '{event.Description}', '{event.Poster}', {event.CatID});'''
+                query = f'''insert into Events (UserCreated, Title, Description, Poster, CatID, Capacity, Date, Time, Duration) values({event.UserCreated}, '{event.Title}', '{event.Description}', '{event.Poster}', {event.CatID}, {event.Capacity},{event.Date}, '{event.Time}', '{event.Duration}');'''
                 cursor.execute(query)
                 self.connection.commit()
-                return True
+                query = f'''select EventID from Events where Title = '{event.Title}' and Description = '{event.Description}' and UserCreated = '{event.UserCreated}' and CatID = {event.CatID};'''
+                cursor.execute(query)
+                data = cursor.fetchall()
+                return data[0][0]
             else:
-                return False
+                return -1
         except Exception as e:
             print("Exception in insertEvent", str(e))
-            return False
+            return -1
         finally:
             if cursor != None:
                 cursor.close()
 
     # Insert new EventVenue
-    def insertEventVenu(self, eventVen):
-        cursor = None
-        try:
-            if self.connection != None:
-                cursor = self.connection.cursor()              
-                query = f'''insert into EventVenue (Date, Time, Duration, EventID) values({eventVen.Date}, '{eventVen.Time}', '{eventVen.Duration}', {eventVen.EventID});'''
-                cursor.execute(query)
-                self.connection.commit()
-                return True
-            else:
-                return False
-        except Exception as e:
-            print("Exception in insertEventVenue", str(e))
-            return False
-        finally:
-            if cursor != None:
-                cursor.close()
+    # def insertEventVenu(self, eventVen):
+    #     cursor = None
+    #     try:
+    #         if self.connection != None:
+    #             cursor = self.connection.cursor()              
+    #             query = f'''insert into EventVenue (Date, Time, Duration, EventID) values({eventVen.Date}, '{eventVen.Time}', '{eventVen.Duration}', {eventVen.EventID});'''
+    #             cursor.execute(query)
+    #             self.connection.commit()
+    #             return True
+    #         else:
+    #             return False
+    #     except Exception as e:
+    #         print("Exception in insertEventVenue", str(e))
+    #         return False
+    #     finally:
+    #         if cursor != None:
+    #             cursor.close()
 
     def deleteEvent(self, event_id):
         cursor = None
@@ -289,7 +292,7 @@ class model:
         try:
             if self.connection != None:
                 cursor = self.connection.cursor()
-                cursor.execute(f"select * from Events where UserCreated != {user_id};")
+                cursor.execute(f"select Events.Title, Events.Description, Events.Poster, Events.Date, Events.Time, Events.Duration, EventCategies.Tag from Events, EventCategies where Events.CatID = EventCategies.CatID AND UserCreated != {user_id} order by Events.Capacity, Events.Date;")
                 data = cursor.fetchall()
                 return data
         except Exception as e:

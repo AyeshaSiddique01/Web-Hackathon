@@ -86,6 +86,38 @@ def logIn() :
         access_token = create_access_token(identity=user_id)
         return jsonify(access_token=access_token), 200
    
+@app.route("/AddEvent", methods=["POST"])
+def AddEvent():
+    UserCreated =  get_jwt_identity()
+    Title = request.json.get("Title")
+    Description = request.json.get("Description")
+    CatID = request.json.get("CatID")
+    Capacity = request.json.get("Capacity")
+    f = request.files.get("Poster")
+    Poster = f"Static\Poster\{UserCreated}_{Title}_{Description}.pdf"
+    if Path(Poster).is_file():
+        os.remove(Poster)
+    f.save(Poster)
+
+    Date = request.json.get("Date")
+    Time = request.json.get("Time")
+    Duration = request.json.get("Duration")
+    event = Events(0, UserCreated, Title, Description, Poster, CatID, Capacity,Date, Time, Duration)
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    eventId = m.insertEvent(event)
+
+# snd mail
+    return 200
+
+@app.route("/Feed", methods=["GET"])
+def Feed():
+    user_id =  get_jwt_identity()
+    m = model(app.config["DB_IP"], app.config["DB_USER"],
+              app.config["DB_PASSWORD"], app.config["DATABASE"])
+    data = m.getEventsOfOthers(user_id)
+    return jsonify(data)
+
 # Running app
 if __name__ == '__main__':
     app.run(debug=True)
